@@ -1,0 +1,58 @@
+{% set version = "2.7" %}
+
+context:
+  version: "2.7"
+
+package:
+  name: gsl
+  version: {{ version }}
+
+source:
+  url: http://ftp.gnu.org/gnu/gsl/gsl-{{ version }}.tar.gz
+  sha256: efbbf3785da0e53038be7907500628b466152dbc3c173a87de1b5eba2e23602b
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler("c") }}
+    - autoconf                  # [unix]
+    - automake                  # [unix]
+    - libtool                   # [unix]
+    - make                      # [unix]
+  host:
+    - libblas
+    - libcblas
+  run:
+
+test:
+  files:
+    - test
+
+  requires:
+    - {{ compiler('c') }}
+
+  commands:
+    - gsl-config --prefix  # [not win]
+    - ls -al $PREFIX/lib/libgsl${SHLIB_EXT}              # [not win]
+    - ls -al $PREFIX/lib/libgslcblas${SHLIB_EXT}         # [not win]
+    - ls -al $PREFIX/lib/libgslcblas.0.dylib             # [osx]
+    - ls -al $PREFIX/lib/libgsl.*.dylib                  # [osx]
+    - ls -al $PREFIX/lib/libgslcblas.so.0                # [linux]
+    - ls -al $PREFIX/lib/libgsl.so.*                     # [linux]
+
+about:
+  home: http://www.gnu.org/software/gsl/
+  license: GPL-3.0-or-later
+  license_file:
+    - COPYING
+    - getopt_LICENSE.txt  # [win]
+  summary: GNU Scientific Library
+
+extra:
+  recipe-maintainers:
+    - kwilcox
+    - mingwandroid
+    - ocefpaf
+    - traversaro
